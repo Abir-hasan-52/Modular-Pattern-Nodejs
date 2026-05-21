@@ -5,6 +5,7 @@ import express, {
 } from "express";
 
 import { pool } from "./db";
+import { userRoute } from "./modules/user/user.route";
 
 const app: Application = express();
 
@@ -13,7 +14,7 @@ app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: true })); // for nested data to show we use "extended = true" . if it false then it can't to show nested data
 
-// connection with server and cloud database;
+app.use("/api/users", userRoute)
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
@@ -22,34 +23,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-// create user
-app.post("/api/users", async (req: Request, res: Response) => {
-  // console.log(req.body);
-  const { name, email, password, age } = req.body;
-  try {
-    const result = await pool.query(
-      `
-    INSERT INTO users(name,email,password,age)
-    VALUES($1,$2,$3,$4)
-     RETURNING *
-    `,
-      [name, email, password, age],
-    );
-    // console.log(result);
-    res.status(201).json({
-      success: true,
-      message: "user Created successfully",
-      author: "Abir",
-      data: result.rows[0],
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      error: error,
-    });
-  }
-});
+ 
 // get all users
 app.get("/api/users", async (req: Request, res: Response) => {
   try {

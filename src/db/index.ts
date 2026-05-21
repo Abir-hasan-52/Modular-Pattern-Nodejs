@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import config from "../config";
-
+// connection with server and cloud/ neon database;
 export const pool = new Pool({
   connectionString: config.conncetion_string
      
