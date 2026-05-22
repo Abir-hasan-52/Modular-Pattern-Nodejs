@@ -2,8 +2,7 @@ import { Pool } from "pg";
 import config from "../config";
 // connection with server and cloud/ neon database;
 export const pool = new Pool({
-  connectionString: config.conncetion_string
-     
+  connectionString: config.conncetion_string,
 });
 
 export const initDB = async () => {
@@ -20,6 +19,22 @@ export const initDB = async () => {
       update_at TIMESTAMP DEFAULT NOW()
       )
       `);
+
+    await pool.query(`
+       CREATE TABLE  IF NOT EXISTS profiles(
+       id SERIAL PRIMARY KEY,
+       user_id INT  UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+
+       bio TEXT,
+       address TEXT,
+       phone VARCHAR(15),
+       gender VARCHAR(10),
+
+       created_at TIMESTAMP DEFAULT NOW(),
+       update_at TIMESTAMP DEFAULT NOW()
+
+       )
+        `);
     console.log("DATABASE CONNCECTED SUCCESSFULLY");
   } catch (error) {
     console.log(error);
